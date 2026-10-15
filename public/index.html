@@ -1,0 +1,528 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student Course Management</title>
+<style>
+:root {
+  --bg:#080b12; --panel:#111722; --panel2:#171f2d;
+  --border:#263248; --blue:#4285ff; --blue2:#2463eb;
+  --text:#edf3ff; --muted:#91a0b8; --green:#31d6a0;
+  --red:#ff687c; --radius:16px;
+}
+* {box-sizing:border-box}
+body {
+  margin:0;background:var(--bg);color:var(--text);
+  font-family:Inter,Segoe UI,Arial,sans-serif;line-height:1.5;
+}
+button,input,select {font:inherit}
+button {cursor:pointer}
+.topbar {
+  padding:22px 5%;display:flex;align-items:center;
+  justify-content:space-between;gap:15px;flex-wrap:wrap;
+  background:#0c111b;border-bottom:1px solid var(--border);
+}
+.brand {display:flex;align-items:center;gap:13px}
+.logo {
+  width:46px;height:46px;border-radius:14px;
+  background:linear-gradient(135deg,#4285ff,#774bff);
+  display:grid;place-items:center;font-size:23px;font-weight:800;
+}
+h1 {font-size:22px;margin:0}
+.brand p,.muted {color:var(--muted);margin:3px 0;font-size:13px}
+.pill {
+  padding:8px 13px;border-radius:30px;background:#10271f;
+  color:var(--green);font-size:12px;border:1px solid #20513f;
+}
+main {max-width:1450px;margin:auto;padding:30px 5% 55px}
+.intro {margin-bottom:25px}
+.intro h2 {font-size:25px;margin:0 0 5px}
+.intro p {margin:0;color:var(--muted)}
+.stats {
+  display:grid;grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:16px;margin-bottom:28px;
+}
+.stat,.panel {
+  background:var(--panel);border:1px solid var(--border);
+  border-radius:var(--radius);
+}
+.stat {padding:20px}
+.stat-label {color:var(--muted);font-size:13px}
+.stat-value {font-size:30px;font-weight:750;margin-top:8px}
+.stat-icon {
+  width:39px;height:39px;display:grid;place-items:center;
+  border-radius:11px;background:#1b2b49;color:#8bb5ff;
+  font-size:20px;margin-bottom:15px
+}
+.panel {padding:23px;margin-bottom:24px;min-width:0}
+.panel-head {
+  display:flex;justify-content:space-between;align-items:center;
+  gap:12px;flex-wrap:wrap;margin-bottom:20px
+}
+.panel h2 {font-size:18px;margin:0}
+.panel-head p {font-size:13px;color:var(--muted);margin:4px 0 0}
+.form-grid {
+  display:grid;grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:15px
+}
+.field {display:flex;flex-direction:column;gap:7px;min-width:0}
+label {font-size:12px;color:#b9c6dc;font-weight:600}
+input,select {
+  width:100%;min-width:0;background:#0a101b;border:1px solid #2b3850;
+  border-radius:9px;padding:12px;color:var(--text);outline:none
+}
+input:focus,select:focus {border-color:var(--blue)}
+input::placeholder {color:#65748c}
+.actions {display:flex;gap:9px;flex-wrap:wrap;margin-top:17px}
+.btn {
+  border:1px solid transparent;border-radius:9px;
+  padding:10px 15px;font-weight:650;font-size:13px
+}
+.primary {background:var(--blue2);color:white}
+.primary:hover {background:var(--blue)}
+.secondary {background:#1a2435;color:#dbe6fa;border-color:#34425a}
+.danger {background:#301922;color:#ff9aaa;border-color:#6a293a}
+.small {padding:7px 10px;font-size:12px}
+.toolbar {
+  display:flex;align-items:end;gap:12px;flex-wrap:wrap;margin-bottom:17px
+}
+.toolbar .field {flex:1;min-width:135px}
+.table-wrap {width:100%;overflow-x:auto}
+table {border-collapse:collapse;width:100%;min-width:620px}
+th {
+  text-align:left;color:#91a9ce;font-size:11px;text-transform:uppercase;
+  letter-spacing:.7px;background:#151e2c;padding:14px
+}
+td {padding:14px;border-bottom:1px solid #222e40;font-size:13px}
+tbody tr:hover {background:#151e2b}
+tbody tr:last-child td {border-bottom:none}
+.row-actions {display:flex;gap:7px}
+.tag {
+  display:inline-block;background:#172a48;color:#9ec3ff;
+  border-radius:20px;padding:4px 9px;font-size:11px
+}
+.empty {text-align:center;color:var(--muted);padding:30px}
+.section-label {
+  font-size:11px;text-transform:uppercase;letter-spacing:1.5px;
+  color:var(--blue);font-weight:750;margin:0 0 13px
+}
+.toast {
+  position:fixed;right:22px;top:22px;z-index:10;
+  background:#162235;border:1px solid #3a4e6c;border-radius:12px;
+  padding:15px 19px;max-width:min(390px,90vw);
+  box-shadow:0 15px 50px #0008;display:none
+}
+.toast.success {border-color:#238565}
+.toast.error {border-color:#b63d53}
+.toast.show {display:block}
+.toast-title {font-weight:750;margin-bottom:3px}
+.toast-message {font-size:13px;color:#c4d0e4}
+footer {text-align:center;color:var(--muted);font-size:12px;padding:12px}
+@media(max-width:900px) {
+  .stats {grid-template-columns:repeat(2,minmax(0,1fr))}
+  .form-grid {grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:520px) {
+  main {padding:22px 4%}
+  .panel {padding:16px}
+  .stats {gap:10px}
+  .stat {padding:14px}
+  .stat-value {font-size:25px}
+  .form-grid {grid-template-columns:1fr}
+  .intro h2 {font-size:22px}
+}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">
+    <div class="logo">S</div>
+    <div>
+      <h1>Student<span style="color:#5792ff">Course</span></h1>
+      <p>Management dashboard · Local MongoDB</p>
+    </div>
+  </div>
+  <div class="pill">● Local system</div>
+</header>
+
+<main>
+  <div class="intro">
+    <h2>Overview</h2>
+    <p>Manage student records, courses and academic performance in one place.</p>
+  </div>
+
+  <section class="stats">
+    <div class="stat"><div class="stat-icon">♙</div>
+      <div class="stat-label">Total Students</div><div class="stat-value" id="totalStudents">—</div>
+    </div>
+    <div class="stat"><div class="stat-icon">▤</div>
+      <div class="stat-label">Total Courses</div><div class="stat-value" id="totalCourses">—</div>
+    </div>
+    <div class="stat"><div class="stat-icon">↗</div>
+      <div class="stat-label">Average Marks</div><div class="stat-value" id="averageMarks">—</div>
+    </div>
+    <div class="stat"><div class="stat-icon">★</div>
+      <div class="stat-label">Highest Marks</div><div class="stat-value" id="highestMarks">—</div>
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="panel-head">
+      <div><h2>Student Management</h2>
+        <p>Add, edit and maintain student records.</p></div>
+      <span class="tag">student_master</span>
+    </div>
+    <form id="studentForm">
+      <div class="form-grid">
+        <div class="field"><label for="sid">Student ID (SID)</label>
+          <input id="sid" type="number" step="1" min="1" required placeholder="e.g. 101"></div>
+        <div class="field"><label for="name">Full name</label>
+          <input id="name" required maxlength="100" placeholder="Student name"></div>
+        <div class="field"><label for="age">Age</label>
+          <input id="age" type="number" step="1" min="1" required placeholder="e.g. 20"></div>
+        <div class="field"><label for="marks">Marks (0–100)</label>
+          <input id="marks" type="number" min="0" max="100" step="0.01" required placeholder="e.g. 85"></div>
+      </div>
+      <div class="actions">
+        <button class="btn primary" id="studentSubmit" type="submit">+ Add student</button>
+        <button class="btn secondary" type="button" id="studentCancel" hidden>Cancel edit</button>
+      </div>
+    </form>
+  </section>
+
+  <section class="panel">
+    <div class="panel-head">
+      <div><h2>Student Records</h2><p>Filter and sort students using database aggregation.</p></div>
+    </div>
+    <div class="toolbar">
+      <div class="field"><label for="minMarks">Minimum marks</label>
+        <input id="minMarks" type="number" min="0" max="100" placeholder="All marks"></div>
+      <div class="field"><label for="sortBy">Sort by</label>
+        <select id="sortBy"><option value="sid">Student ID</option><option value="name">Name</option><option value="marks">Marks</option></select></div>
+      <div class="field"><label for="sortOrder">Order</label>
+        <select id="sortOrder"><option value="asc">Ascending</option><option value="desc">Descending</option></select></div>
+      <button class="btn secondary" type="button" id="applyFilter">Apply</button>
+      <button class="btn secondary" type="button" id="resetFilter">Reset</button>
+    </div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>SID</th><th>Name</th><th>Age</th><th>Marks</th><th>Actions</th></tr></thead>
+      <tbody id="studentRows"><tr><td colspan="5" class="empty">Loading students…</td></tr></tbody>
+    </table></div>
+  </section>
+
+  <section class="panel">
+    <div class="panel-head">
+      <div><h2>Course Management</h2><p>Assign courses to existing students.</p></div>
+      <span class="tag">course_master</span>
+    </div>
+    <form id="courseForm">
+      <div class="form-grid">
+        <div class="field"><label for="cid">Course ID (CID)</label>
+          <input id="cid" required maxlength="40" placeholder="e.g. C01"></div>
+        <div class="field"><label for="courseSid">Student</label>
+          <select id="courseSid" required><option value="">Select a student</option></select></div>
+        <div class="field"><label for="cname">Course name</label>
+          <input id="cname" required maxlength="100" placeholder="e.g. MongoDB"></div>
+      </div>
+      <div class="actions">
+        <button class="btn primary" id="courseSubmit" type="submit">+ Add course</button>
+        <button class="btn secondary" type="button" id="courseCancel" hidden>Cancel edit</button>
+      </div>
+    </form>
+  </section>
+
+  <section class="panel">
+    <div class="panel-head">
+      <div><h2>Course Records</h2><p>Manage course IDs, student references and course names.</p></div>
+    </div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>CID</th><th>Student ID</th><th>Student name</th><th>Course</th><th>Actions</th></tr></thead>
+      <tbody id="courseRows"><tr><td colspan="5" class="empty">Loading courses…</td></tr></tbody>
+    </table></div>
+  </section>
+
+  <section class="panel">
+    <div class="panel-head">
+      <div><h2>Student &amp; Course Overview</h2><p>Related collections combined with MongoDB $lookup.</p></div>
+      <span class="tag">Joined view</span>
+    </div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>SID</th><th>Student</th><th>Age</th><th>Marks</th><th>Enrolled courses</th></tr></thead>
+      <tbody id="overviewRows"><tr><td colspan="5" class="empty">Loading overview…</td></tr></tbody>
+    </table></div>
+  </section>
+</main>
+
+<div id="toast" class="toast" role="status" aria-live="polite">
+  <div id="toastTitle" class="toast-title"></div>
+  <div id="toastMessage" class="toast-message"></div>
+</div>
+<footer>Student Course Management System · Node.js · Express · MongoDB · Mongoose</footer>
+
+<script>
+const $ = id => document.getElementById(id);
+let editingStudent = null;
+let editingCourse = null;
+let studentsCache = [];
+let coursesCache = [];
+let toastTimer;
+
+function escapeHTML(value) {
+  return String(value ?? "").replace(/[&<>"']/g, char => ({
+    "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;"
+  }[char]));
+}
+
+function notify(message, type = "success") {
+  $("toast").className = "toast show " + type;
+  $("toastTitle").textContent = type === "success" ? "Success" : "Notice";
+  $("toastMessage").textContent = message;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => $("toast").classList.remove("show"), 4000);
+}
+
+async function api(url, options = {}) {
+  let response;
+  try {
+    response = await fetch(url, {
+      ...options,
+      headers: {
+        ...(options.body ? {"Content-Type":"application/json"} : {}),
+        ...options.headers
+      }
+    });
+  } catch {
+    throw new Error("Cannot reach the server. Check that npm start is running.");
+  }
+
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) throw new Error(data.message || "Request failed.");
+  return data;
+}
+
+function studentPayload() {
+  return {
+    sid: Number($("sid").value),
+    name: $("name").value.trim(),
+    age: Number($("age").value),
+    marks: Number($("marks").value)
+  };
+}
+
+function coursePayload() {
+  return {
+    cid: $("cid").value.trim(),
+    sid: Number($("courseSid").value),
+    cname: $("cname").value.trim()
+  };
+}
+
+async function loadDashboard() {
+  const d = await api("/api/dashboard");
+  $("totalStudents").textContent = d.totalStudents;
+  $("totalCourses").textContent = d.totalCourses;
+  $("averageMarks").textContent = Number(d.averageMarks).toFixed(1);
+  $("highestMarks").textContent = d.highestMarks;
+}
+
+async function loadStudents() {
+  const params = new URLSearchParams();
+  if ($("minMarks").value !== "") params.set("minMarks", $("minMarks").value);
+  params.set("sortBy", $("sortBy").value);
+  params.set("order", $("sortOrder").value);
+
+  studentsCache = await api("/api/students?" + params.toString());
+  $("studentRows").innerHTML = studentsCache.length ? studentsCache.map(s => `
+    <tr>
+      <td>${escapeHTML(s.sid)}</td>
+      <td>${escapeHTML(s.name)}</td>
+      <td>${escapeHTML(s.age)}</td>
+      <td><span class="tag">${escapeHTML(s.marks)}</span></td>
+      <td><div class="row-actions">
+        <button class="btn secondary small" data-action="edit-student" data-id="${escapeHTML(s._id)}">Edit</button>
+        <button class="btn danger small" data-action="delete-student" data-id="${escapeHTML(s._id)}">Delete</button>
+      </div></td>
+    </tr>`).join("") : `<tr><td colspan="5" class="empty">No matching students.</td></tr>`;
+
+  $("courseSid").innerHTML = '<option value="">Select a student</option>' +
+    studentsCache.map(s => `<option value="${escapeHTML(s.sid)}">${escapeHTML(s.sid)} — ${escapeHTML(s.name)}</option>`).join("");
+}
+
+async function loadCourses() {
+  coursesCache = await api("/api/courses");
+  $("courseRows").innerHTML = coursesCache.length ? coursesCache.map(c => {
+    const student = studentsCache.find(s => Number(s.sid) === Number(c.sid));
+    return `<tr>
+      <td>${escapeHTML(c.cid)}</td>
+      <td>${escapeHTML(c.sid)}</td>
+      <td>${escapeHTML(student ? student.name : "Student not found")}</td>
+      <td>${escapeHTML(c.cname)}</td>
+      <td><div class="row-actions">
+        <button class="btn secondary small" data-action="edit-course" data-id="${escapeHTML(c._id)}">Edit</button>
+        <button class="btn danger small" data-action="delete-course" data-id="${escapeHTML(c._id)}">Delete</button>
+      </div></td>
+    </tr>`;
+  }).join("") : `<tr><td colspan="5" class="empty">No courses yet.</td></tr>`;
+}
+
+async function loadOverview() {
+  const records = await api("/api/overview");
+  $("overviewRows").innerHTML = records.length ? records.map(s => {
+    const names = s.courses.length
+      ? s.courses.map(c => `${c.cname} (${c.cid})`).join(", ")
+      : "No courses assigned";
+    return `<tr>
+      <td>${escapeHTML(s.sid)}</td><td>${escapeHTML(s.name)}</td>
+      <td>${escapeHTML(s.age)}</td><td>${escapeHTML(s.marks)}</td>
+      <td>${escapeHTML(names)}</td>
+    </tr>`;
+  }).join("") : `<tr><td colspan="5" class="empty">No students available.</td></tr>`;
+}
+
+async function refreshAll() {
+  try {
+    await loadDashboard();
+    await loadStudents();
+    await loadCourses();
+    await loadOverview();
+  } catch (error) {
+    notify(error.message, "error");
+  }
+}
+
+$("studentForm").addEventListener("submit", async event => {
+  event.preventDefault();
+  try {
+    const payload = studentPayload();
+    const url = editingStudent
+      ? `/api/students/${encodeURIComponent(editingStudent)}`
+      : "/api/students";
+    await api(url, {
+      method: editingStudent ? "PUT" : "POST",
+      body: JSON.stringify(payload)
+    });
+    notify(editingStudent ? "Student updated." : "Student added.");
+    resetStudentForm();
+    await refreshAll();
+  } catch (error) {
+    notify(error.message, "error");
+  }
+});
+
+function resetStudentForm() {
+  editingStudent = null;
+  $("studentForm").reset();
+  $("studentSubmit").textContent = "+ Add student";
+  $("studentCancel").hidden = true;
+  $("sid").disabled = false;
+}
+
+$("studentCancel").addEventListener("click", resetStudentForm);
+
+$("studentRows").addEventListener("click", async event => {
+  const button = event.target.closest("button[data-action]");
+  if (!button) return;
+  const student = studentsCache.find(s => s._id === button.dataset.id);
+  if (!student) return;
+
+  if (button.dataset.action === "edit-student") {
+    editingStudent = student._id;
+    $("sid").value = student.sid;
+    $("name").value = student.name;
+    $("age").value = student.age;
+    $("marks").value = student.marks;
+    $("studentSubmit").textContent = "Save changes";
+    $("studentCancel").hidden = false;
+    $("sid").disabled = true;
+    $("studentForm").scrollIntoView({behavior:"smooth", block:"center"});
+  }
+
+  if (button.dataset.action === "delete-student" &&
+      confirm(`Delete student ${student.name} (SID ${student.sid})?`)) {
+    try {
+      const result = await api(`/api/students/${encodeURIComponent(student._id)}`, {method:"DELETE"});
+      notify(result.message);
+      await refreshAll();
+    } catch (error) {
+      notify(error.message, "error");
+    }
+  }
+});
+
+$("courseForm").addEventListener("submit", async event => {
+  event.preventDefault();
+  try {
+    const url = editingCourse
+      ? `/api/courses/${encodeURIComponent(editingCourse)}`
+      : "/api/courses";
+    await api(url, {
+      method: editingCourse ? "PUT" : "POST",
+      body: JSON.stringify(coursePayload())
+    });
+    notify(editingCourse ? "Course updated." : "Course added.");
+    resetCourseForm();
+    await refreshAll();
+  } catch (error) {
+    notify(error.message, "error");
+  }
+});
+
+function resetCourseForm() {
+  editingCourse = null;
+  $("courseForm").reset();
+  $("courseSubmit").textContent = "+ Add course";
+  $("courseCancel").hidden = true;
+}
+
+$("courseCancel").addEventListener("click", resetCourseForm);
+
+$("courseRows").addEventListener("click", async event => {
+  const button = event.target.closest("button[data-action]");
+  if (!button) return;
+  const course = coursesCache.find(c => c._id === button.dataset.id);
+  if (!course) return;
+
+  if (button.dataset.action === "edit-course") {
+    editingCourse = course._id;
+    $("cid").value = course.cid;
+    $("cname").value = course.cname;
+    $("courseSid").value = String(course.sid);
+    $("courseSubmit").textContent = "Save changes";
+    $("courseCancel").hidden = false;
+    $("courseForm").scrollIntoView({behavior:"smooth", block:"center"});
+  }
+
+  if (button.dataset.action === "delete-course" &&
+      confirm(`Delete course ${course.cname} (${course.cid})?`)) {
+    try {
+      const result = await api(`/api/courses/${encodeURIComponent(course._id)}`, {method:"DELETE"});
+      notify(result.message);
+      await refreshAll();
+    } catch (error) {
+      notify(error.message, "error");
+    }
+  }
+});
+
+$("applyFilter").addEventListener("click", loadStudentsWithMessage);
+$("resetFilter").addEventListener("click", async () => {
+  $("minMarks").value = "";
+  $("sortBy").value = "sid";
+  $("sortOrder").value = "asc";
+  await loadStudentsWithMessage();
+});
+
+async function loadStudentsWithMessage() {
+  try {
+    await loadStudents();
+  } catch (error) {
+    notify(error.message, "error");
+  }
+}
+
+refreshAll();
+</script>
+</body>
+</html>

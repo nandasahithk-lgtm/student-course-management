@@ -1,0 +1,14 @@
+{
+  "name": "student-course-management",
+  "version": "1.0.0",
+  "description": "Student Course Management System using Node.js, Express, MongoDB and Mongoose",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "express": "^5.2.1",
+    "mongoose": "^9.10.3"
+  }
+}

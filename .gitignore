@@ -1,0 +1,10 @@
+
+node_modules/
+.env
+.env.*
+!.env.example
+.DS_Store
+Thumbs.db
+/server-backup.js
+/index-backup.html
+/index.html
